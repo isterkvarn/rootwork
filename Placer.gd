@@ -3,7 +3,7 @@ extends Node2D
 var roots_in_inv : int = 10
 const ITERATION_THRESHOLD = 10
 var current_iteration_value = 0
-var iterate = true
+var iterate = false
 
 
 onready var grid = get_parent().get_node("Grid")
@@ -13,7 +13,7 @@ onready var grid = get_parent().get_node("Grid")
 func _process(delta):
 
 	# Wait for player input to place cells
-	if Input.is_action_just_pressed("place") and not iterate:
+	if Input.is_action_just_pressed("place") and roots_in_inv > 0 and not iterate:
 		var mouse_pos = grid.world_to_map(get_global_mouse_position())
 		var did_place : bool = grid.place_root(mouse_pos)
 		
