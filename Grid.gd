@@ -3,45 +3,64 @@ extends TileMap
 const BACKGROUND : int = 0
 const ROOT : int = 1
 const PISS : int = 2
+const BASE_NEIGHBOUR_THRESHOLD = 4
 
 var rng = RandomNumberGenerator.new()
+var new_roots = []
+var last_new_roots = []
+var neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	rng.randomize()
+	new_roots = get_used_cells()
 
 # Do a time step
 func do_step():	
 	var spawns = []
 	
-	for root in get_used_cells():
-		if get_num_of_neighbours(root) > 3:
+	if len(new_roots) < 5:
+		new_roots = last_new_roots
+		neighbour_threshold += 1
+	else:
+		neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
+		
+	
+	for root in new_roots:
+		if get_num_of_neighbours(root) > neighbour_threshold:
 			continue
 		
 		var cluster = get_spawn_coord(root)
 		var spawn_range = [[-1, 1], [-1, 1]]
 		
-		if cluster.x > 3:
-			spawn_range[0][1] = 0
-		elif cluster.x < -3:
-			spawn_range[0][0] = 0
-		if cluster.y > 3:
-			spawn_range[1][1] = 0
-		elif cluster.y > -3:
-			spawn_range[1][0] = 0
+		if cluster.x > 7:
+			spawn_range[0][1] = -1
+		elif cluster.x < -7:
+			spawn_range[0][0] = 1
+		if cluster.y > 7:
+			spawn_range[1][1] = -1
+		elif cluster.y < -7:
+			spawn_range[1][0] = 1
 		
-		var neighbour = Vector2(
-			rng.randi_range(spawn_range[0][0], spawn_range[0][1]) + root.x,
-			rng.randi_range(spawn_range[1][0], spawn_range[1][1]) + root.y
-		)
+		var spawn_number = 1
+		if 0 == rng.randi_range(0,5):
+			spawn_number = 2
+		
+		for i in range(0, spawn_number):
+			var neighbour = Vector2(
+				rng.randi_range(spawn_range[0][0], spawn_range[0][1]) + root.x,
+				rng.randi_range(spawn_range[1][0], spawn_range[1][1]) + root.y
+			)
+			
+			spawns.append(neighbour)
 
-
-		spawns.append(neighbour)
-
+	last_new_roots = new_roots
+	new_roots = []
 	for root in spawns:
 		place_root(root)
 
 func place_root(coord : Vector2):
+	new_roots.append(coord)
 	if get_cell(coord.x, coord.y) != ROOT:
 		set_cell(coord.x, coord.y, ROOT)
 		return true;

@@ -28,7 +28,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if event.button_mask == BUTTON_MASK_RIGHT:
 			position -= event.relative * zoom
-			print(position)
 	if event is InputEventMouseButton:
 		if event.is_pressed():
 			if event.button_index == BUTTON_WHEEL_UP:
