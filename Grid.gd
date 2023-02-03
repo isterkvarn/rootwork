@@ -33,7 +33,10 @@ func do_step():
 	print(get_root_neighbours(Vector2(0, 0)))
 
 func place_root(coord : Vector2):
-	set_cell(coord.x, coord.y, ROOT)
+	if get_cell(coord.x, coord.y):
+		set_cell(coord.x, coord.y, ROOT)
+		return true;
+	return false;
 
 func get_root_neighbours(root : Vector2) -> Array:
 	var neighbours = []
