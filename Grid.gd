@@ -28,7 +28,3 @@ func do_step():
 	
 	set_cell(-1, -1, 2)
 	print(get_used_cells()[0])
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
