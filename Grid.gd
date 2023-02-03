@@ -21,23 +21,23 @@ func do_step():
 		var cluster = get_spawn_coord(root)
 		var spawn_range = [[-1, 1], [-1, 1]]
 		
-		if cluster.x > 9:
+		if cluster.x > 3:
 			spawn_range[0][1] = 0
-		elif cluster.x < -9:
+		elif cluster.x < -3:
 			spawn_range[0][0] = 0
-		if cluster.y > 9:
+		if cluster.y > 3:
 			spawn_range[1][1] = 0
-		elif cluster.y > -9:
+		elif cluster.y > -3:
 			spawn_range[1][0] = 0
 		
 		var neighbour = Vector2(
 			rng.randi_range(spawn_range[0][0], spawn_range[0][1]) + root.x,
 			rng.randi_range(spawn_range[1][0], spawn_range[1][1]) + root.y
 		)
-			
-		
+
+
 		spawns.append(neighbour)
-	
+
 	for root in spawns:
 		place_root(root)
 

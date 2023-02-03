@@ -3,7 +3,7 @@ extends Node2D
 var roots_in_inv : int = 10
 const ITERATION_THRESHOLD = 10
 var current_iteration_value = 0
-var iterate = false
+var iterate = true
 
 
 onready var grid = get_parent().get_node("Grid")

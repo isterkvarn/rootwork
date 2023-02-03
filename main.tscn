@@ -36,4 +36,5 @@ script = SubResource( 1 )
 texture = ExtResource( 3 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
+current = true
 script = ExtResource( 2 )
