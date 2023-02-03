@@ -11,12 +11,7 @@ class SpawnRule:
 	func _init(root_num_in : int, root_range_in):
 		root_num = root_num_in
 		root_range = root_range_in
-	
-	# Check if a root should be spawned on the square
-	func should_spawn(coord : Vector2) -> bool:
-		#var neighbours = get_root_neighbours(coord)
-		return true
-		
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,18 +25,30 @@ func do_step():
 	set_cell(-1, -1, 2)
 	typeof(get_used_cells()[0])
 	var rule = SpawnRule.new(1, 1)
-	print(get_root_neighbours(Vector2(0, 0)))
+	#print(get_root_neighbours(Vector2(0, 0)))
 
 func place_root(coord : Vector2):
 	set_cell(coord.x, coord.y, ROOT)
+	
+# Determine if a root should be spawned on the coordinate
+func should_spawn(coord : Vector2) -> bool:
+	print(get_root_neighbours(Vector2(1, 1)))
+	return true
 
-func get_root_neighbours(root : Vector2) -> Array:
-	var neighbours = []
+# Get the number of root neighbours
+func get_root_neighbours(root : Vector2) -> int:
+	var num : int = 0
+	
 	for i in range(9):
 		if i == 4:
 			continue
-		neighbours.append(Vector2(i / 3 - 1, i % 3 - 1))
-	return neighbours
+			
+		var neighbour = Vector2(i / 3 - 1, i % 3 - 1)
+	
+		if get_cell(neighbour.x, neighbour.y) == ROOT:
+			num += 1
+		
+	return num
 		
 		
 
