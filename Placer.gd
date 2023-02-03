@@ -17,7 +17,7 @@ func _process(delta):
 		var mouse_pos = grid.world_to_map(get_global_mouse_position())
 		var did_place : bool = grid.place_root(mouse_pos)
 		
-		# Only remove from inv if place was succesful
+		# Only remove from inv if place was successfull
 		if did_place:
 			roots_in_inv -= 1
 			

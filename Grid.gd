@@ -13,7 +13,8 @@ class SpawnRule:
 		root_range = root_range_in
 	
 	# Check if a root should be spawned on the square
-	func should_spawn() -> bool:
+	func should_spawn(coord : Vector2) -> bool:
+		#var neighbours = get_root_neighbours(coord)
 		return true
 		
 
@@ -27,4 +28,17 @@ func do_step():
 	print("do step")
 	
 	set_cell(-1, -1, 2)
-	print(get_used_cells()[0])
+	typeof(get_used_cells()[0])
+	var rule = SpawnRule.new(1, 1)
+	print(get_root_neighbours(Vector2(0, 0)))
+
+func place_root(coord : Vector2):
+	set_cell(coord.x, coord.y, ROOT)
+
+func get_root_neighbours(root : Vector2) -> Array:
+	var neighbours = []
+	for i in range(9):
+		if i == 4:
+			continue
+		neighbours.append(Vector2(i / 3 - 1, i % 3 - 1))
+	return neighbours
