@@ -1,9 +1,9 @@
 extends Node2D
 
 var roots_in_inv : int = 10
-const ITERATION_THRESHOLD = 100
+const ITERATION_THRESHOLD = 10
 var current_iteration_value = 0
-var iterate = false
+var iterate = true
 
 
 onready var grid = get_parent().get_node("Grid")
@@ -24,7 +24,10 @@ func _process(delta):
 	#print(current_iteration_value)
 	if iterate:
 		current_iteration_value += 1
-		#grid.next_generation()
+	
+	if current_iteration_value >= ITERATION_THRESHOLD:
+		current_iteration_value = 0
+		grid.do_step()
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
@@ -33,7 +36,7 @@ func _input(event):
 		if event.scancode == KEY_H:
 			#print("jump one iteration")
 			current_iteration_value += 1
-			#grid.next_generation()
+			grid.do_step()
 			
 		# start generating each step
 		if event.scancode == KEY_J:
