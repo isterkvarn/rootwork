@@ -28,12 +28,19 @@ func do_step():
 	#print(get_root_neighbours(Vector2(0, 0)))
 
 func place_root(coord : Vector2):
+<<<<<<< HEAD
 	set_cell(coord.x, coord.y, ROOT)
 	
 # Determine if a root should be spawned on the coordinate
 func should_spawn(coord : Vector2) -> bool:
 	print(get_root_neighbours(Vector2(1, 1)))
 	return true
+=======
+	if get_cell(coord.x, coord.y):
+		set_cell(coord.x, coord.y, ROOT)
+		return true;
+	return false;
+>>>>>>> 9f805884eaefd6e3f5f8bcda58803e6de94d6572
 
 # Get the number of root neighbours
 func get_root_neighbours(root : Vector2) -> int:
@@ -42,6 +49,7 @@ func get_root_neighbours(root : Vector2) -> int:
 	for i in range(9):
 		if i == 4:
 			continue
+<<<<<<< HEAD
 			
 		var neighbour = Vector2(i / 3 - 1, i % 3 - 1)
 	
@@ -55,3 +63,7 @@ func get_root_neighbours(root : Vector2) -> int:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+=======
+		neighbours.append(Vector2(i / 3 - 1, i % 3 - 1))
+	return neighbours
+>>>>>>> 9f805884eaefd6e3f5f8bcda58803e6de94d6572
