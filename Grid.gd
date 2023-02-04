@@ -11,9 +11,9 @@ const TURN_THRESHOLD = 7
 
 var rng = RandomNumberGenerator.new()
 var new_roots = []
-var last_new_roots = []
 var neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
 var score = 0
+var gen_queue = null
 
 onready var placer = get_parent().get_node("Placer")
 
@@ -65,6 +65,7 @@ func _ready():
 	new_roots = get_used_cells()
 	score += len(new_roots)
 	spread_the_piss()
+	gen_queue = Queue.new()
 
 # Do a time step
 func do_step():	
@@ -107,10 +108,12 @@ func do_step():
 		else:
 			spawns.append(piss_neighbours[0])
 
-	last_new_roots = new_roots
+	gen_queue.add_roots(new_roots)
+	gen_queue.do_iteration()
 	new_roots = []
 	for root in spawns:
 		place_root(root)
+	
 
 func place_root(coord : Vector2):
 	new_roots.append(coord)
