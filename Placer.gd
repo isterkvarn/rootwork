@@ -1,6 +1,6 @@
 extends Node2D
 
-var roots_in_inv : int = 50
+var roots_in_inv : int = 3
 const ITERATION_THRESHOLD = 0.05
 var current_iteration_value = 0
 var iterate = false
