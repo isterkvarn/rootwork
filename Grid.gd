@@ -29,11 +29,26 @@ class Queue:
 	var queue : Array = []
 	const size : int = 5
 	const life_time : Array = [4, 3, 2, 1, 1]
+	const gen_diff = []
 	
 	func _init():
 		for i in range(size):
 			queue.append([])
+			gen_diff.append([])
+
+	func _reset_gen_diff():
+		for i in range(size):
+			gen_diff[i] = []
 	
+	func get_root_diff():
+		var roots : Array = []
+		
+		for gens in gen_diff:
+			roots.append([])
+			for gen in gens:
+				roots[len(roots)-1].append(gen.roots)
+		return roots
+
 	func add_roots(roots : Array):
 		var gen = Generation.new(roots, 0)
 		queue[0].append(gen)
@@ -47,6 +62,8 @@ class Queue:
 		return roots
 	
 	func do_iteration():
+		_reset_gen_diff()
+		
 		for i in range(len(queue)):
 			for gen in queue[i]:
 				gen.life_time += 1
@@ -57,6 +74,7 @@ class Queue:
 					if i < size - 1:
 						gen.life_time = 0
 						queue[i + 1].append(gen)
+						gen_diff[i + 1].append(gen)
 					queue[i].erase(gen)
 
 # Called when the node enters the scene tree for the first time.
