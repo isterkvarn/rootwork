@@ -17,6 +17,48 @@ var score = 0
 
 onready var placer = get_parent().get_node("Placer")
 
+class Generation:
+	var roots : Array = []
+	var life_time : int = 0
+	
+	func _init(roots_in : Array, life_time_in : int):
+		roots = roots_in
+		life_time = life_time_in
+
+class Queue:
+	var queue : Array = []
+	const size : int = 5
+	const life_time : Array = [4, 3, 2, 1, 1]
+	
+	func _init():
+		for i in range(size):
+			queue.append([])
+	
+	func add_roots(roots : Array):
+		var gen = Generation.new(roots, 0)
+		queue[0].append(gen)
+	
+	func get_gen(gen_num : int) -> Array:
+		var roots : Array = []
+		
+		for gen in queue[gen_num]:
+			roots += gen.roots
+		
+		return roots
+	
+	func do_iteration():
+		for i in range(len(queue)):
+			for gen in queue[i]:
+				gen.life_time += 1
+
+				# If the gen has passed its lifetime, move it further
+				# further down the queue
+				if gen.life_time >= life_time[i]:
+					if i < size - 1:
+						gen.life_time = 0
+						queue[i + 1].append(gen)
+					queue[i].erase(gen)
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	rng.randomize()
@@ -30,7 +72,6 @@ func do_step():
 	
 	if not new_roots:
 		placer.change_iterate()
-		
 	
 	for root in new_roots:
 		if get_num_of_neighbours(root) > neighbour_threshold:
