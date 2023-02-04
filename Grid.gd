@@ -4,26 +4,28 @@ const BACKGROUND : int = 0
 const ROOT : int = 1
 const PISS : int = 2
 const BASE_NEIGHBOUR_THRESHOLD = 4
+const PISS_AREA = 1000
+const NUM_OF_PISS = 200
 
 var rng = RandomNumberGenerator.new()
 var new_roots = []
 var last_new_roots = []
 var neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
 
+onready var placer = get_parent().get_node("Placer")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	rng.randomize()
 	new_roots = get_used_cells()
+	spread_the_piss()
 
 # Do a time step
 func do_step():	
 	var spawns = []
 	
-	if len(new_roots) < 5:
-		new_roots = last_new_roots
-		neighbour_threshold += 1
-	else:
-		neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
+	if not new_roots:
+		placer.change_iterate()
 		
 	
 	for root in new_roots:
@@ -34,16 +36,16 @@ func do_step():
 		var spawn_range = [[-1, 1], [-1, 1]]
 		
 		if cluster.x > 7:
-			spawn_range[0][1] = -1
+			spawn_range[0][1] = 0
 		elif cluster.x < -7:
-			spawn_range[0][0] = 1
+			spawn_range[0][0] = 0
 		if cluster.y > 7:
-			spawn_range[1][1] = -1
+			spawn_range[1][1] = 0
 		elif cluster.y < -7:
-			spawn_range[1][0] = 1
+			spawn_range[1][0] = 0
 		
 		var spawn_number = 1
-		if 0 == rng.randi_range(0,5):
+		if 0 == rng.randi_range(0,80):
 			spawn_number = 2
 		
 		for i in range(0, spawn_number):
@@ -62,6 +64,8 @@ func do_step():
 func place_root(coord : Vector2):
 	new_roots.append(coord)
 	if get_cell(coord.x, coord.y) != ROOT:
+		if get_cell(coord.x, coord.y) == PISS:
+			placer.add_to_inventory(3)
 		set_cell(coord.x, coord.y, ROOT)
 		return true;
 	return false;
@@ -85,7 +89,7 @@ func get_num_of_neighbours(root : Vector2) -> int:
 
 func get_spawn_coord(root : Vector2) -> Vector2:
 	var cluster = Vector2(0, 0)
-	var root_range = 3
+	var root_range = 5
 	
 	var neighbours = pow((root_range * 2 + 1), 2)
 	
@@ -109,3 +113,7 @@ func get_spawn_coord(root : Vector2) -> Vector2:
 			cluster.y += 1
 	
 	return cluster
+
+func spread_the_piss():
+	for i in range(NUM_OF_PISS):
+		set_cell(rng.randi_range(-PISS_AREA,PISS_AREA), rng.randi_range(-PISS_AREA,PISS_AREA), PISS)
