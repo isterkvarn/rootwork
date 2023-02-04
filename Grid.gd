@@ -34,30 +34,36 @@ func do_step():
 	for root in new_roots:
 		if get_num_of_neighbours(root) > neighbour_threshold:
 			continue
-		
-		var cluster = get_spawn_coord(root)
-		var spawn_range = [[-1, 1], [-1, 1]]
-		
-		if cluster.x > TURN_THRESHOLD:
-			spawn_range[0][1] = 0
-		elif cluster.x < -TURN_THRESHOLD:
-			spawn_range[0][0] = 0
-		if cluster.y > TURN_THRESHOLD:
-			spawn_range[1][1] = 0
-		elif cluster.y < -TURN_THRESHOLD:
-			spawn_range[1][0] = 0
-		
-		var spawn_number = 1
-		if 0 == rng.randi_range(0,80):
-			spawn_number = 2
-		
-		for i in range(0, spawn_number):
-			var neighbour = Vector2(
-				rng.randi_range(spawn_range[0][0], spawn_range[0][1]) + root.x,
-				rng.randi_range(spawn_range[1][0], spawn_range[1][1]) + root.y
-			)
 			
-			spawns.append(neighbour)
+		var piss_neighbours = get_piss_neighbours(root)
+			
+		if not piss_neighbours:
+		
+			var cluster = get_spawn_coord(root)
+			var spawn_range = [[-1, 1], [-1, 1]]
+			
+			if cluster.x > TURN_THRESHOLD:
+				spawn_range[0][1] = 0
+			elif cluster.x < -TURN_THRESHOLD:
+				spawn_range[0][0] = 0
+			if cluster.y > TURN_THRESHOLD:
+				spawn_range[1][1] = 0
+			elif cluster.y < -TURN_THRESHOLD:
+				spawn_range[1][0] = 0
+			
+			var spawn_number = 1
+			if 0 == rng.randi_range(0,80):
+				spawn_number = 2
+			
+			for i in range(0, spawn_number):
+				var neighbour = Vector2(
+					rng.randi_range(spawn_range[0][0], spawn_range[0][1]) + root.x,
+					rng.randi_range(spawn_range[1][0], spawn_range[1][1]) + root.y
+				)
+				
+				spawns.append(neighbour)
+		else:
+			spawns.append(piss_neighbours[0])
 
 	last_new_roots = new_roots
 	new_roots = []
@@ -124,3 +130,17 @@ func spread_the_piss():
 
 func get_score():
 	return score
+	
+func get_piss_neighbours(root):
+	var piss_neighbours = []
+	
+	for i in range(9):
+		if i == 4:
+			continue
+			
+		var neighbour = Vector2(i/3 + root.x - 1, i%3 + root.y - 1)
+		
+		if get_cell(neighbour.x, neighbour.y) == PISS:
+			piss_neighbours.append(neighbour)
+		
+	return piss_neighbours
