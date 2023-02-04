@@ -22,8 +22,6 @@ func _process(delta):
 			if did_place:
 				roots_in_inv -= 1
 			
-	
-	print(roots_in_inv)
 	if iterate:
 		current_iteration_value += delta
 	
@@ -54,3 +52,6 @@ func change_iterate():
 	
 func add_to_inventory(num):
 	roots_in_inv += num
+	
+func get_roots_in_inventory():
+	return roots_in_inv

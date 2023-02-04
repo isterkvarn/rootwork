@@ -11,6 +11,7 @@ var rng = RandomNumberGenerator.new()
 var new_roots = []
 var last_new_roots = []
 var neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
+var score = 0
 
 onready var placer = get_parent().get_node("Placer")
 
@@ -18,6 +19,7 @@ onready var placer = get_parent().get_node("Placer")
 func _ready():
 	rng.randomize()
 	new_roots = get_used_cells()
+	score += len(new_roots)
 	spread_the_piss()
 
 # Do a time step
@@ -64,6 +66,7 @@ func do_step():
 func place_root(coord : Vector2):
 	new_roots.append(coord)
 	if get_cell(coord.x, coord.y) != ROOT:
+		score += 1
 		if get_cell(coord.x, coord.y) == PISS:
 			placer.add_to_inventory(3)
 		set_cell(coord.x, coord.y, ROOT)
@@ -117,3 +120,6 @@ func get_spawn_coord(root : Vector2) -> Vector2:
 func spread_the_piss():
 	for i in range(NUM_OF_PISS):
 		set_cell(rng.randi_range(-PISS_AREA,PISS_AREA), rng.randi_range(-PISS_AREA,PISS_AREA), PISS)
+
+func get_score():
+	return score
