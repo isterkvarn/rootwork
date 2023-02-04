@@ -1,8 +1,8 @@
 extends TileMap
 
 const BACKGROUND : int = 0
-const ROOT : int = 1
-const ROOT_INDEXES = [1, 2, 3, 4, 5]
+const ROOT : int = 0
+const ROOT_INDEXES = [0, 1, 2, 3, 4, 5]
 const PISS : int = 6
 const BASE_NEIGHBOUR_THRESHOLD = 4
 const PISS_AREA = 10000
@@ -27,8 +27,8 @@ class Generation:
 
 class Queue:
 	var queue : Array = []
-	const size : int = 5
-	const life_time : Array = [4, 3, 2, 1, 1]
+	const size : int = 6
+	const life_time : Array = [4, 8, 16, 32, 64, 1]
 	const gen_diff = []
 	
 	func _init():
@@ -46,7 +46,7 @@ class Queue:
 		for gens in gen_diff:
 			roots.append([])
 			for gen in gens:
-				roots[len(roots)-1].append(gen.roots)
+				roots[len(roots)-1] += gen.roots
 		return roots
 
 	func add_roots(roots : Array):
@@ -128,10 +128,17 @@ func do_step():
 
 	gen_queue.add_roots(new_roots)
 	gen_queue.do_iteration()
+	change_gen_color(gen_queue.get_root_diff())
+	
 	new_roots = []
 	for root in spawns:
 		place_root(root)
 	
+
+func change_gen_color(gens):
+	for i in range(len(gens)):
+		for root in gens[i]:
+			set_cell(root.x, root.y, ROOT_INDEXES[i])
 
 func place_root(coord : Vector2):
 	new_roots.append(coord)
