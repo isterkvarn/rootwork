@@ -2,10 +2,11 @@ extends TileMap
 
 const BACKGROUND : int = 0
 const ROOT : int = 1
-const PISS : int = 2
+const ROOT_INDEXES = [1, 2, 3, 4, 5]
+const PISS : int = 6
 const BASE_NEIGHBOUR_THRESHOLD = 4
-const PISS_AREA = 1000
-const NUM_OF_PISS = 200
+const PISS_AREA = 10000
+const NUM_OF_PISS = 20000
 const TURN_THRESHOLD = 7
 
 var rng = RandomNumberGenerator.new()
@@ -72,7 +73,7 @@ func do_step():
 
 func place_root(coord : Vector2):
 	new_roots.append(coord)
-	if get_cell(coord.x, coord.y) != ROOT:
+	if not is_root(get_cell(coord.x, coord.y)):
 		score += 1
 		if get_cell(coord.x, coord.y) == PISS:
 			placer.add_to_inventory(3)
@@ -92,7 +93,7 @@ func get_num_of_neighbours(root : Vector2) -> int:
 			continue
 		var neighbour = Vector2(i/3 + root.x - 1, i%3 + root.y - 1)
 		
-		if get_cell(neighbour.x, neighbour.y) == ROOT:
+		if is_root(get_cell(neighbour.x, neighbour.y)):
 			num += 1
 		
 	return num
@@ -109,7 +110,7 @@ func get_spawn_coord(root : Vector2) -> Vector2:
 			i%(root_range*2 + 1) + root.y - root_range
 		)
 		
-		if get_cell(neighbour.x, neighbour.y) != ROOT:
+		if not is_root(get_cell(neighbour.x, neighbour.y)):
 			continue
 		
 		if neighbour.x < root.x:
@@ -144,3 +145,6 @@ func get_piss_neighbours(root):
 			piss_neighbours.append(neighbour)
 		
 	return piss_neighbours
+
+func is_root(cell):
+	return cell in ROOT_INDEXES
