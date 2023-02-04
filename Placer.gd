@@ -13,7 +13,7 @@ onready var grid = get_parent().get_node("Grid")
 func _process(delta):
 
 	# Wait for player input to place cells
-	if Input.is_action_pressed("place") and roots_in_inv > 0 and not iterate:
+	if Input.is_action_pressed("place") and roots_in_inv > 0:
 		var mouse_pos = grid.world_to_map(get_global_mouse_position())
 		if grid.get_num_of_neighbours(mouse_pos) > 0:
 			var did_place : bool = grid.place_root(mouse_pos)
