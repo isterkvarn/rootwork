@@ -25,13 +25,13 @@ func _ready():
 
 [node name="Base" type="Node"]
 
+[node name="Camera2D" parent="." instance=ExtResource( 2 )]
+
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="GUI" parent="CanvasLayer" instance=ExtResource( 3 )]
 anchor_left = 0.0
 anchor_top = 0.0
-
-[node name="Camera2D" parent="." instance=ExtResource( 2 )]
 
 [node name="Game" parent="." instance=ExtResource( 1 )]
 script = SubResource( 1 )

@@ -6,6 +6,7 @@ const PISS : int = 2
 const BASE_NEIGHBOUR_THRESHOLD = 4
 const PISS_AREA = 1000
 const NUM_OF_PISS = 200
+const TURN_THRESHOLD = 7
 
 var rng = RandomNumberGenerator.new()
 var new_roots = []
@@ -37,13 +38,13 @@ func do_step():
 		var cluster = get_spawn_coord(root)
 		var spawn_range = [[-1, 1], [-1, 1]]
 		
-		if cluster.x > 7:
+		if cluster.x > TURN_THRESHOLD:
 			spawn_range[0][1] = 0
-		elif cluster.x < -7:
+		elif cluster.x < -TURN_THRESHOLD:
 			spawn_range[0][0] = 0
-		if cluster.y > 7:
+		if cluster.y > TURN_THRESHOLD:
 			spawn_range[1][1] = 0
-		elif cluster.y < -7:
+		elif cluster.y < -TURN_THRESHOLD:
 			spawn_range[1][0] = 0
 		
 		var spawn_number = 1
