@@ -89,9 +89,6 @@ func _ready():
 func do_step():	
 	var spawns = []
 	
-	if not new_roots:
-		placer.change_iterate()
-	
 	for root in new_roots:
 		if get_num_of_neighbours(root) > neighbour_threshold:
 			continue
