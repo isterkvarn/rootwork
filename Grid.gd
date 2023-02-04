@@ -1,18 +1,19 @@
 extends TileMap
 
 const BACKGROUND : int = 0
-const ROOT : int = 1
-const PISS : int = 2
+const ROOT : int = 0
+const ROOT_INDEXES = [0, 1, 2, 3, 4, 5]
+const PISS : int = 6
 const BASE_NEIGHBOUR_THRESHOLD = 4
-const PISS_AREA = 1000
-const NUM_OF_PISS = 200
+const PISS_AREA = 10000
+const NUM_OF_PISS = 20000
 const TURN_THRESHOLD = 7
 
 var rng = RandomNumberGenerator.new()
 var new_roots = []
-var last_new_roots = []
 var neighbour_threshold = BASE_NEIGHBOUR_THRESHOLD
 var score = 0
+var gen_queue = null
 
 onready var placer = get_parent().get_node("Placer")
 
@@ -26,8 +27,8 @@ class Generation:
 
 class Queue:
 	var queue : Array = []
-	const size : int = 5
-	const life_time : Array = [4, 3, 2, 1, 1]
+	const size : int = 6
+	const life_time : Array = [4, 8, 16, 32, 64, 1]
 	const gen_diff = []
 	
 	func _init():
@@ -45,7 +46,7 @@ class Queue:
 		for gens in gen_diff:
 			roots.append([])
 			for gen in gens:
-				roots[len(roots)-1].append(gen.roots)
+				roots[len(roots)-1] += gen.roots
 		return roots
 
 	func add_roots(roots : Array):
@@ -82,6 +83,7 @@ func _ready():
 	new_roots = get_used_cells()
 	score += len(new_roots)
 	spread_the_piss()
+	gen_queue = Queue.new()
 
 # Do a time step
 func do_step():	
@@ -124,14 +126,23 @@ func do_step():
 		else:
 			spawns.append(piss_neighbours[0])
 
-	last_new_roots = new_roots
+	gen_queue.add_roots(new_roots)
+	gen_queue.do_iteration()
+	change_gen_color(gen_queue.get_root_diff())
+	
 	new_roots = []
 	for root in spawns:
 		place_root(root)
+	
+
+func change_gen_color(gens):
+	for i in range(len(gens)):
+		for root in gens[i]:
+			set_cell(root.x, root.y, ROOT_INDEXES[i])
 
 func place_root(coord : Vector2):
 	new_roots.append(coord)
-	if get_cell(coord.x, coord.y) != ROOT:
+	if not is_root(get_cell(coord.x, coord.y)):
 		score += 1
 		if get_cell(coord.x, coord.y) == PISS:
 			placer.add_to_inventory(3)
@@ -151,7 +162,7 @@ func get_num_of_neighbours(root : Vector2) -> int:
 			continue
 		var neighbour = Vector2(i/3 + root.x - 1, i%3 + root.y - 1)
 		
-		if get_cell(neighbour.x, neighbour.y) == ROOT:
+		if is_root(get_cell(neighbour.x, neighbour.y)):
 			num += 1
 		
 	return num
@@ -168,7 +179,7 @@ func get_spawn_coord(root : Vector2) -> Vector2:
 			i%(root_range*2 + 1) + root.y - root_range
 		)
 		
-		if get_cell(neighbour.x, neighbour.y) != ROOT:
+		if not is_root(get_cell(neighbour.x, neighbour.y)):
 			continue
 		
 		if neighbour.x < root.x:
@@ -203,3 +214,6 @@ func get_piss_neighbours(root):
 			piss_neighbours.append(neighbour)
 		
 	return piss_neighbours
+
+func is_root(cell):
+	return cell in ROOT_INDEXES
